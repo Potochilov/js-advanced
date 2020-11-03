@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <meta charset="utf-8" />
+   <title>JS-ADV. Lesson 1. Task 3 </title>
+</head>
+<body>
+  <div class="wrap" id="app"></div>
+
+  <script>
+
+  /*
+      Задание:
+      Сложить в элементе с id App следующую размету HTML:
+
+      <header>
+        <a href="http://google.com.ua">
+          <img src="https://www.google.com.ua/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png">
+        </a>
+        <div class="menu">
+          <a href="#1"> link 1</a>
+          <a href="#1"> link 2</a>
+          <a href="#1"> link 3</a>
+        </div>
+      </header>
+
+      Используя следующие методы для работы:
+      getElementById
+      createElement
+      element.innerText
+      element.className
+      element.setAttribute
+      element.appendChild
+  */
+
+  let wrap = document.getElementById('app');
+  let header = document.createElement('header');
+  let linkInHeader = linkGenerator('http://google.com.ua');
+  let linkImg = document.createElement('img');
+  let menu = document.createElement('div');
+
+  menu.className = 'menu';
+  linkImg.setAttribute('src', 'https://www.google.com.ua/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png');
+  linkInHeader.appendChild(linkImg);
+  header.appendChild(linkInHeader);
+  menu.appendChild(linkGenerator('#1', ' link 1'));
+  menu.appendChild(linkGenerator('#2', ' link 2'));
+  menu.appendChild(linkGenerator('#3', ' link 3'));
+  header.appendChild(menu);
+  wrap.appendChild(header);
+
+  function linkGenerator(href = '#', text = '') {
+    const link = document.createElement('a');
+	  link.href = href;
+	  link.innerText = text;
+	  return link;
+  }
+
+  </script>
+</body>
+</html>
