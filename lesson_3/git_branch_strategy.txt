@@ -1,0 +1,17 @@
+1. создать новуб ветку 
+    git branch <branch name> - 
+2. переключиться на созданную ветку
+    git checkout <branch name>
+3. запушить изменения на сервер
+    git push -u origin <branch name>
+4. посмотреть список веток
+    git branch
+    git branch -r - ветки на сервере
+    git branch -a - все ветки
+5. откатиться к коммиту с сохранением прошлых коммитов
+    git revert --no-commit <commit hash>..HEAD
+6. удалить ветку 
+    git push -d origin <branch_name> - на сервере
+    git branch -d branch_name - локально
+7. вернуться к предыдущему комиту без соранения прошлых коммитов
+   git reset <commit hash>
