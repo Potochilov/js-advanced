@@ -1,78 +1,114 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Task 2</title>
-    <link rel="stylesheet" href="css/normalize.css" />
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
-    <div class="wrap" id="wrap">
-      <header>
-        <button id="HouseButton">House</button>
-        <button id="TreeButton">Tree</button>
-        <button id="PlaneButton">Plane</button>
-      </header>
-      <div id="chooseYourBlock">
+<head>
+  <meta charset="utf-8"/>
+  <title>Task 2</title>
+  <link rel="stylesheet" href="css/normalize.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <header>
+    <button class="cover-btn">House</button>
+    <button class="cover-btn">Tree</button>
+    <button class="cover-btn">Plane</button>
+  </header>
+  <div id="chooseYourBlock">
 
-      </div>
-      <div id="result">
+  </div>
+  <button id="randBtn" style="display: none">rand from group</button>
+  <div id="result">
 
-      </div>
-    </div>
-    <script>
-      /*
-        Задание:
+  </div>
+</div>
+<script>
+	/*
+    Задание:
 
-        По нажатию на кнопку, в блок с id chooseYourBlock выводить иконку с нажатой кнопки:
+    По нажатию на кнопку, в блок с id chooseYourBlock выводить иконку с нажатой кнопки:
 
-        House:  https://image.flaticon.com/icons/svg/149/149064.svg
-        Tree: https://image.flaticon.com/icons/svg/620/620705.svg
-        Plane: https://image.flaticon.com/icons/svg/579/579268.svg
+    House:  https://image.flaticon.com/icons/svg/149/149064.svg
+    Tree: https://image.flaticon.com/icons/svg/620/620705.svg
+    Plane: https://image.flaticon.com/icons/svg/579/579268.svg
 
-        Под иконкой расположить еще одну кнопку, по нажатию на которую из соответствующего массива
-        подтягивается случайная картинка с изображением в блок result.
-        Предыдущий результат очищается.
+    Под иконкой расположить еще одну кнопку, по нажатию на которую из соответствующего массива
+    подтягивается случайная картинка с изображением в блок result.
+    Предыдущий результат очищается.
 
-        var houseArray = [
-        "https://static.pexels.com/photos/106399/pexels-photo-106399.jpeg",
-        "https://i.pinimg.com/736x/7f/be/50/7fbe50ec634c65709d7fe6ac267c4e6f--large-garage-plans-house-plans-large-family.jpg",
-        "https://i.ytimg.com/vi/Xx6t0gmQ_Tw/maxresdefault.jpg"
-      ];
-        var planeArray = [
-        "http://www.x-plane.com/wp-content/uploads/2014/08/B777-200ER.png",
-        "https://media.cntraveler.com/photos/57067c1e9adc6caf5afe3f4c/master/pass/plane-landing-cr-getty-sb10062851ai-001.jpg",
-        "https://media.wired.com/photos/59323264a31264584499367f/master/w_1024,c_limit/diesel-plane-inline.jpg"
-      ];
-      var treeArray = [
-        "https://static.pexels.com/photos/56875/tree-dawn-nature-bucovina-56875.jpeg",
-        "https://c1.staticflickr.com/8/7218/7184786016_1ddab461e8_b.jpg",
-        "http://www.atzmut.com/wp-content/uploads/2016/01/tree.jpg"
-      ];
+  */
 
-      */
+	const houseArray = [
+		"https://static.pexels.com/photos/106399/pexels-photo-106399.jpeg",
+		"https://i.pinimg.com/736x/7f/be/50/7fbe50ec634c65709d7fe6ac267c4e6f--large-garage-plans-house-plans-large-family.jpg",
+		"https://i.ytimg.com/vi/Xx6t0gmQ_Tw/maxresdefault.jpg"
+	];
+	const planeArray = [
+		"http://www.x-plane.com/wp-content/uploads/2014/08/B777-200ER.png",
+		"https://media.cntraveler.com/photos/57067c1e9adc6caf5afe3f4c/master/pass/plane-landing-cr-getty-sb10062851ai-001.jpg",
+		"https://media.wired.com/photos/59323264a31264584499367f/master/w_1024,c_limit/diesel-plane-inline.jpg"
+	];
+	const treeArray = [
+		"https://static.pexels.com/photos/56875/tree-dawn-nature-bucovina-56875.jpeg",
+		"https://c1.staticflickr.com/8/7218/7184786016_1ddab461e8_b.jpg",
+		"https://i.pinimg.com/originals/25/67/7c/25677c47d636a1f1b466685973dcacf1.jpg"
+	];
 
-      var buttons = document.querySelectorAll('button');
-      var iconBlock = document.getElementById('chooseYourBlock');
-      var resultBlock = document.getElementById('result');
+	const buttons = document.querySelectorAll('.cover-btn');
+	const iconBlock = document.getElementById('chooseYourBlock');
+	const randBtn = document.getElementById('randBtn');
+	const resultBlock = document.getElementById('result');
+	let currentAction;
 
-      console.log(buttons);
 
-      var iconsObj = {
-        house:  'https://image.flaticon.com/icons/svg/149/149064.svg',
-        tree: 'https://image.flaticon.com/icons/svg/620/620705.svg',
-        plane: 'https://image.flaticon.com/icons/svg/579/579268.svg'
-      }
+	const iconsObj = {
+		house: {
+			cover: 'https://image.flaticon.com/icons/svg/149/149064.svg',
+			gallery: houseArray
+		},
+		tree: {
+			cover: 'https://image.flaticon.com/icons/svg/620/620705.svg',
+			gallery: treeArray
+		},
+		plane: {
+			cover: 'https://image.flaticon.com/icons/svg/579/579268.svg',
+			gallery: planeArray
+		}
+	};
 
-      function showIcon(e){
-        var val = e.target.innerText.toLowerCase();
-        console.log(e);
+	const showIcon = (e) => {
+		if (iconBlock.firstChild) {
+			iconBlock.removeChild(iconBlock.firstChild);
+		}
+		randBtn.style.display = 'block';
+		currentAction = e.target.innerText.toLowerCase();
+		const showImage = document.createElement('img');
+		showImage.src = iconsObj[currentAction].cover;
+		iconBlock.appendChild(showImage);
+	};
 
-      }
+	// generate random int
+	const getRandInteger = (min, max) => {
+		const rand = min + Math.random() * (max + 1 - min);
+		return Math.floor(rand);
+	};
 
-      buttons.forEach( (btn) => {
-        //alert('working')
-      })
-    </script>
-  </body>
+	const createRandImage = function () {
+		if (resultBlock.firstChild) {
+			resultBlock.removeChild(resultBlock.firstChild);
+		}
+		const itemNum = getRandInteger(0, 2);
+		const img = document.createElement('img');
+		img.src = iconsObj[currentAction]['gallery'][itemNum];
+		resultBlock.appendChild(img);
+		console.log(iconsObj);
+	};
+
+	buttons.forEach((btn) => {
+		btn.addEventListener('click', showIcon)
+	});
+
+	randBtn.addEventListener('click', createRandImage);
+
+</script>
+</body>
 </html>

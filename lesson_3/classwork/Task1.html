@@ -51,8 +51,35 @@
           Получить значение инпута: Receiver.value [Receiver - это id]
 
       */
+      const MAX_ITEMS = 5;
+      const btnAddToList = document.getElementById('AddToList');
+      const textInput = document.getElementById('Receiver');
+      const result = document.getElementById('list');
+      const errorContainer = document.getElementById('error');
 
-      var ListCount = 0;
+      btnAddToList.addEventListener('click', addItem);
+
+      function addItem() {
+	      if (result.childElementCount === MAX_ITEMS) { // check items count
+		      errorContainer.innerText = `Max limit ${MAX_ITEMS} items`;
+		      btnAddToList.removeEventListener('click', addItem);
+		      btnAddToList.disabled = true;
+		      return;
+	      }
+
+	      const inputValue = textInput.value; // get input text
+	      if ('' === inputValue) { // check input value
+		      errorContainer.innerText = `Item text can not be blank`;
+		      return;
+	      }
+
+	      errorContainer.innerText = ''; // clean old errors
+
+	      const newItem = document.createElement('li');
+	      textInput.value = ''; // clean old data
+	      newItem.innerText = inputValue;
+	      result.appendChild(newItem);
+      }
 
     </script>
   </body>

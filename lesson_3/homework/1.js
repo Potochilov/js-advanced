@@ -18,5 +18,39 @@
 
 */
 
-  var OurSliderImages = ['images/cat1.jpg', 'images/cat2.jpg', 'images/cat3.jpg', 'images/cat4.jpg', 'images/cat5.jpg', 'images/cat6.jpg', 'images/cat7.jpg', 'images/cat8.jpg'];
-  var currentPosition = 0;
+  const OurSliderImages = ['images/cat1.jpg', 'images/cat2.jpg', 'images/cat3.jpg', 'images/cat4.jpg', 'images/cat5.jpg', 'images/cat6.jpg', 'images/cat7.jpg', 'images/cat8.jpg'];
+  const slider = document.getElementById('slider');
+  const prevBtn = document.getElementById('PrevSlide');
+  const nextBtn = document.getElementById('NextSlide');
+  let currentPosition = 0;
+
+window.addEventListener('load', initSlider);
+prevBtn.addEventListener('click', prevSlide);
+nextBtn.addEventListener('click', nextSlide);
+
+const RenderImage = function (position = 0) {
+  const imgPath = OurSliderImages[position];
+  const img = document.createElement('img');
+  img.src = imgPath;
+  if (slider.firstChild) {
+    slider.removeChild(slider.firstChild);
+  }
+  slider.appendChild(img);
+  window.setTimeout(function() {
+    img.classList.add('loadedImage');
+  }, 50);
+};
+
+function initSlider () {
+  RenderImage();
+}
+
+function nextSlide() {
+  currentPosition = (currentPosition < OurSliderImages.length -1) ? currentPosition + 1 : 0;
+  RenderImage(currentPosition);
+}
+
+function prevSlide() {
+  currentPosition = (currentPosition === 0) ? OurSliderImages.length -1 : currentPosition - 1;
+  RenderImage(currentPosition);
+}

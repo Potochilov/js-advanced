@@ -50,7 +50,29 @@ body{
   background: red;
 }
 
-.loadedImage{
-  transform: rotate(390deg);
-  transition: 0.5s;
+#slider {
+  position: relative;
+  overflow: hidden;
 }
+
+#slider img {
+  position: relative;
+  opacity: 0;
+  top: -40px;
+  transition: .5s;
+  transition-timing-function: ease-out;
+}
+
+#slider img.loadedImage {
+  top: 0;
+  opacity: 1;
+}
+
+/*#slider .loadedImage {*/
+/*  opacity: .5;*/
+/*  -webkit-transition: 3s;*/
+/*  -moz-transition: 3s;*/
+/*  -ms-transition: 3s;*/
+/*  -o-transition: 3s;*/
+/*  transition: 3s;*/
+/*}*/

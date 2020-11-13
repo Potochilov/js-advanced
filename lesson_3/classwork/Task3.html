@@ -12,14 +12,14 @@
       <div class="roadMap__container yellow">
         <button class="navButton" data-direction="<"> Prev </button>
         <div class="roadMap">
-          <div class="roadMapPoint" data-id="1"></div>
-          <div class="roadMapPoint ball" data-id="2"></div>
-          <div class="roadMapPoint" data-id="3"></div>
-          <div class="roadMapPoint" data-id="4"></div>
-          <div class="roadMapPoint" data-id="5"></div>
-          <div class="roadMapPoint" data-id="6"></div>
-          <div class="roadMapPoint" data-id="7"></div>
-          <div class="roadMapPoint" data-id="8"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint ball"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint"></div>
         </div>
         <button class="navButton" data-direction=">"> Next </button>
       </div>
@@ -27,10 +27,10 @@
       <div class="roadMap__container red">
         <button class="navButton" data-direction="<"> Prev </button>
         <div class="roadMap">
-          <div class="roadMapPoint" data-id="1"></div>
-          <div class="roadMapPoint" data-id="2"></div>
-          <div class="roadMapPoint ball" data-id="3"></div>
-          <div class="roadMapPoint" data-id="4"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint ball"></div>
+          <div class="roadMapPoint"></div>
         </div>
         <button class="navButton" data-direction=">"> Next </button>
       </div>
@@ -38,10 +38,10 @@
       <div class="roadMap__container blue">
         <button class="navButton" data-direction="<"> Prev </button>
         <div class="roadMap">
-          <div class="roadMapPoint" data-id="1"></div>
-          <div class="roadMapPoint ball" data-id="2"></div>
-          <div class="roadMapPoint" data-id="3"></div>
-          <div class="roadMapPoint" data-id="4"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint ball"></div>
+          <div class="roadMapPoint"></div>
+          <div class="roadMapPoint"></div>
         </div>
         <button class="navButton" data-direction=">"> Next </button>
       </div>
@@ -50,10 +50,10 @@
       <div class="roadMap__container red">
           <button class="navButton" data-direction="<"> Prev </button>
           <div class="roadMap">
-            <div class="roadMapPoint" data-id="1"></div>
-            <div class="roadMapPoint" data-id="2"></div>
-            <div class="roadMapPoint ball" data-id="3"></div>
-            <div class="roadMapPoint" data-id="4"></div>
+            <div class="roadMapPoint"></div>
+            <div class="roadMapPoint"></div>
+            <div class="roadMapPoint ball"></div>
+            <div class="roadMapPoint"></div>
           </div>
           <button class="navButton" data-direction=">"> Next </button>
         </div>
@@ -61,10 +61,10 @@
         <div class="roadMap__container blue">
           <button class="navButton" data-direction="<"> Prev </button>
           <div class="roadMap">
-            <div class="roadMapPoint" data-id="1"></div>
-            <div class="roadMapPoint ball" data-id="2"></div>
-            <div class="roadMapPoint" data-id="3"></div>
-            <div class="roadMapPoint" data-id="4"></div>
+            <div class="roadMapPoint"></div>
+            <div class="roadMapPoint ball"></div>
+            <div class="roadMapPoint"></div>
+            <div class="roadMapPoint"></div>
           </div>
           <button class="navButton" data-direction=">"> Next </button>
         </div>
@@ -77,16 +77,24 @@
 
         Написать скрипт, который будет приводить в действие переключалки из разметки.
         И будет перемещать класс ball по точкам в зависимости от нажатой кнопки
-
       */
 
-      var containers = document.querySelectorAll('.roadMap__container');
-          containers.forEach( function( container ){
-            console.log( container );
-            var ball = container.querySelector('.ball');
-            console.log( ball.dataset.id );
-          })
+      // add event for all buttons
+      const buttons = document.querySelectorAll('.navButton');
+      buttons.forEach(button => {
+	      button.addEventListener('click', moveBoll);
+      });
 
+      // move class "ball" to next element
+      function moveBoll() {
+      	const mode = this.dataset.direction;
+      	const pointsContainer = this.closest('.roadMap__container');
+      	const roadMap = pointsContainer.querySelector('.roadMap');
+      	const currentPoint = roadMap.querySelector('.roadMapPoint.ball');
+      	const nextPoint = ('>' === mode) ? currentPoint.nextElementSibling || roadMap.firstElementChild : currentPoint.previousElementSibling || roadMap.lastElementChild;
+	      nextPoint.classList.add('ball');
+	      currentPoint.classList.remove('ball');
+      }
     </script>
   </body>
 
