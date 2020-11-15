@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Form work1</title>
+  <script>
+		/*
+      Задание:
+        Сделать шиблонизатор элемента по:
+        Ширине input type=range
+        Цвету  input type=color
+        Высоте input type=number
+        Скругление углов input type=number
+        Margin input type=number
+
+      Свойсвта: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference
+
+        + Сделать выборку цвета из рандомных 20 цветов которые выбираются из появившегося блока :
+        https://s3.envato.com/files/230412754/screenshots/1.png
+        За заготовку для рандома цвета использовать функцию из первых занятий.
+
+    */
+
+		// generate random hex color
+		function getRandHexColor() {
+			return '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
+		}
+
+		function setWith(value) {
+			result.style.width = value + 'px';
+		}
+
+		function setHeight(value) {
+			result.style.height = value + 'px';
+		}
+
+		function setRadius(value) {
+			result.style.borderRadius = value + 'px';
+		}
+
+		function setMargin(value) {
+			result.style.margin = value + 'px';
+		}
+
+		function setColor(value) {
+			result.style.background = value;
+		}
+
+		function setGalleryColor(bg) {
+			setColor(bg);
+			console.log(this);
+			const prevBtn = document.querySelector('.selected');
+			if (prevBtn) prevBtn.classList.remove('selected');
+			this.classList.add('selected');
+    }
+
+		window.addEventListener("load", function () {
+			const selectBgBox = document.getElementById('select-bg');
+      const MAX_BG_ITEMS = 20;
+
+      let i  = 0;
+      while (i < MAX_BG_ITEMS) {
+      	const bgButton = document.createElement('div');
+      	const randBg = getRandHexColor();
+	      bgButton.addEventListener('click', setGalleryColor.bind(bgButton, randBg));
+	      bgButton.style.background = randBg;
+	      selectBgBox.appendChild(bgButton);
+	      i++;
+      }
+		});
+
+  </script>
+</head>
+<body>
+<div class="Templating">
+  <form id="templateForm">
+    <div><label>width <input type="range" oninput="setWith(this.value)" value="200" min="10" max="500" step="10"/></label></div>
+    <div><label>height <input type="range" oninput="setHeight(this.value)" value="200" min="10" max="500" step="10"/></label></div>
+    <div><label>radius <input type="range" oninput="setRadius(this.value)" value="10" min="0" max="250" step="1"/></label></div>
+    <div><label>margin <input type="range" oninput="setMargin(this.value)" min="0" max="100" value="20" step="1"/></label></div>
+    <div><label>background <input type="color" oninput="setColor(this.value)" value="#009688"/></label></div>
+    <div id="select-bg"></div>
+  </form>
+
+
+  <div class="result-container">
+    <div id="result"></div>
+  </div>
+</div>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .Templating {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  #templateForm {
+    padding: 20px;
+    width: 250px;
+    background: #9E9E9E;
+    margin-right: 50px;
+  }
+
+  #result {
+    width: 200px;
+    height: 200px;
+    background: #009688;
+    border-radius: 10px;
+    margin: 20px;
+  }
+
+  .result-container {
+    width: fit-content;
+    background: #fffaef;
+  }
+
+  input[type="color"] {
+    border: none;
+    padding: 2px 4px;
+    background: #fff;
+    height: 40px;
+    width: 40px;
+    outline: none;
+  }
+
+  #select-bg {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 0;
+  }
+
+  #select-bg div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 1px;
+    border-radius: 50%;
+  }
+
+  .selected:before {
+    content: '✔';
+  }
+</style>
+</body>
+</html>

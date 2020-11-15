@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Form work1</title>
+  <script>
+		/*
+      Задание:
+
+      1. Сгенерировать список стран в Select countries
+      2. При выборе страны генерировать еще один Select со списком
+        городов этой страны и вывести этот селект в блок result
+      3. При выборе города нужно случайно рандомить температуру от
+      -10 градусов до +40. Если температура
+
+        -10 до 0 то 'Солнечно' 'Легкий снегопад' 'Сильный снегопад'
+        0 до 30 то  'Солнечно' 'Дождь' 'Ветер' 'Сильный дождь'
+        30 до 40 то 'Солнечно' 'Засуха' 'Ветер'
+
+      4. Вывести сообщение на страничку
+        {Country}. В {City} {Weather} {Temperature} градусов.
+        Ukraine. В Kyiv Солнечно -10 градусов
+
+        + бонус добавить красивые картинки с погодой
+    */
+		window.addEventListener("load", function () {
+			const countries = ['Ukraine', 'Poland', 'USA'];
+			const ukraineCity = ['Kyiv', 'Lviv', 'Odesa', 'Charkiv'];
+			const polandCity = ['Warszawa', 'Poznan', 'Krakow', 'Katowice'];
+			const usaCity = ['New York', 'Los Angeles', 'Las Vegas', 'Chicago'];
+
+			const result = document.getElementById('result');
+
+			// normalize horrible data
+			function normalizeData(countries, ...cities) {
+				const countryData = {};
+				countries.map((country, index) => {
+					countryData[country] = cities[index];
+        });
+
+				return countryData;
+			}
+			const countriesData = normalizeData(countries, ukraineCity, polandCity, usaCity);
+
+			const weatherInfo = {
+        minusTeenNull : ['Солнечно', 'Легкий снегопад', 'Сильный снегопад'],
+        nullThirty: ['Солнечно', 'Дождь', 'Ветер', 'Сильный дождь'],
+				thirtyForty: ['Солнечно', 'Засуха', 'Ветер'],
+        getRandWeather(temp) {
+        	if (temp >= -10 && temp <= 0) return this.getRandWeatherValue(this.minusTeenNull);
+        	if (temp > 0 && temp <= 30) return this.getRandWeatherValue(this.nullThirty);
+        	if (temp > 30 && temp <= 40) return this.getRandWeatherValue(this.thirtyForty);
+        },
+        getRandWeatherValue(valuesArr) {
+        	return valuesArr[getRandInteger(0, valuesArr.length -1)];
+        },
+        getWeatherIcon(status) {
+        	if ('Солнечно' === status) return 'weather/sunny.png';
+        	if ('Засуха' === status) return 'weather/drought.png';
+        	if ('Ветер' === status) return 'weather/windy.png';
+        	if ('Ветер' === status) return 'weather/windy.png';
+        	if ('Легкий снегопад' === status) return 'weather/snowfall.png';
+        	if ('Сильный снегопад' === status) return 'weather/heavy_snowfall.png';
+        	if ('Дождь' === status) return 'weather/rain.png';
+        	if ('Сильный дождь' === status) return 'weather/heavy_rain.png';
+        }
+      };
+
+			// generate random int
+			function getRandInteger(min, max) {
+				const rand = min + Math.random() * (max + 1 - min);
+				return Math.floor(rand);
+			}
+
+			const selectCountry = document.getElementById('countries');
+			selectCountry.addEventListener('change', createCitySelect);
+
+			// generate first option
+			const startOpt = new Option("выберите страну", null, true, true);
+			startOpt.disabled = true;
+
+			// generate countries options
+			countries.forEach(country => {
+				const option = new Option(country);
+				selectCountry.appendChild(option);
+			});
+
+			selectCountry.appendChild(startOpt);
+
+			function createCitySelect() {
+				// remove old data
+				result.innerHTML = '';
+
+        const selectCity = document.createElement('select');
+				selectCity.id = 'cities';
+
+        // generate first option
+				const startOpt = new Option("выберите город", null, true, true);
+				startOpt.disabled = true;
+
+				// generate all options with cities
+				countriesData[this.value].map(city => {
+					const option = new Option(city);
+					selectCity.appendChild(option);
+        });
+				selectCity.addEventListener('change', showWeather);
+				selectCity.appendChild(startOpt);
+				result.appendChild(selectCity);
+			}
+
+			function showWeather() {
+				// check old weather
+        const oldResult = document.getElementById('weather-result');
+        if (oldResult) oldResult.parentNode.removeChild(oldResult);
+
+				const weatherData = document.createElement('div');
+				weatherData.id = 'weather-result';
+
+				// create title
+				const title = document.createElement('h1');
+				title.innerText = this.value;
+				weatherData.appendChild(title);
+
+				// create weather temperature
+				const resultTemp = document.createElement('div');
+				resultTemp.classList.add('temp');
+        const temperature = getRandInteger(-10, 40);
+				resultTemp.innerText = (temperature > 0) ? '+' + temperature : temperature;
+				weatherData.appendChild(resultTemp);
+
+				// create weather status
+				const weatherStatus = weatherInfo.getRandWeather(temperature);
+				const statusElement = document.createElement('div');
+				statusElement.innerText = weatherStatus;
+				weatherData.appendChild(statusElement);
+
+				// create weather img
+				const weatherImg = document.createElement('img');
+				weatherImg.src = weatherInfo.getWeatherIcon(weatherStatus);
+				weatherImg.alt = weatherStatus;
+				weatherData.appendChild(weatherImg);
+
+				result.appendChild(weatherData);
+			}
+		});
+  </script>
+</head>
+<body>
+<select id="countries"></select>
+<div id="result"></div>
+</body>
+</html>
