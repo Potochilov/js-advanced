@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+<style>
+  #result {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .clock {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: #000;
+    border: 9px dashed #ffffff;
+  }
+
+  .needle {
+    position: absolute;
+    top: 50%;
+    transform: rotate(90deg);
+    width: 100%;
+    transition: .2s;
+  }
+
+  .needle:before {
+    content: '';
+    display: block;
+    width: calc(50% - 40px);
+    margin-left: 40px;
+    height: 2px;
+    background: #00ff80;
+  }
+
+  .btn-row, .time-row {
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-row {
+    margin-bottom: 30px;
+  }
+
+  .result-time {
+    background: #000;
+    border-radius: 3px;
+    width: fit-content;
+    margin: 15px auto;
+    color: #fff;
+    padding: 5px 60px;
+    font-size: 30px;
+  }
+</style>
+<body>
+<div id="result"></div>
+<!--<button id="switchBtn" data-status="run">RUN</button>-->
+<!--<button id="revers" data-status="run">REVERS</button>-->
+<!--<button id="reset" data-status="run">RESET</button>-->
+<!--
+  Создайте счетчик секунд, который начинает отчет с 1 и заканчивается на 30,
+  также добавьте кнопки который останавливают отчет, и запускают его заново и добавьте кнопку обнуляющую отчет.
+  Также попробуйте изменить код так чтобы отчет начиналься с 30 и заканчивалься на 1.
+
+ + бонус: Сделать так что бы на каждый тик (1с/2c) менялся цвет фона. Можно на основе генератора случайного цвета с предудущих уроков.
+ + бонус: Сделать визуализацию стрелки которая идет по кругу
+      document.getElementById("myDIV").style.transform = "rotate(7deg)";
+
+ + бонус: Сделать кнопки которые выбирают режим в котором идет отсчет - обычный от 0 до 30 или реверсивный от 30 до 0
+-->
+<script>
+
+	class Watch {
+
+		constructor(
+			resultElement,
+			start = 0,
+			end = 60,
+			reverse = false
+		) {
+			this.start = start;
+			this.end = end;
+			this.reverse = reverse || false;
+			this.currentTime = this.reverse ? end : start;
+			this.resultElement = resultElement;
+			this.runningStatus = false;
+			this.radiusStep = 360 / (end - start);
+			this.startRadius = 90;
+			this.currentRadius = this.startRadius;
+
+			// create time element
+			this.timeElement = document.createElement('div');
+			this.timeElement.classList.add('result-time');
+			this.timeElement.innerText = this.currentTime;
+
+			// create time row
+      this.timeRow = document.createElement('div');
+			this.timeRow.classList.add('time-row');
+			this.timeRow.appendChild(this.timeElement);
+
+			// create clock
+			this.clockElement = document.createElement('div');
+			this.clockElement.classList.add('clock');
+      this.needle = document.createElement('div');
+			this.needle.classList.add('needle');
+			this.clockElement.appendChild(this.needle);
+
+			// create switch btn
+			this.startBtn = document.createElement('button');
+			this.startBtn.innerText = 'START';
+			this.startBtn.addEventListener('click', this.startWatch.bind(this));
+
+			// create reverse btn
+			this.reverseBtn = document.createElement('button');
+			this.reverseBtn.innerText = 'REVERSE ON';
+			this.reverseBtn.addEventListener('click', this.reverseWatch.bind(this));
+
+			// create buttons row
+      this.row = document.createElement('div');
+      this.row.classList.add('btn-row');
+
+			// create reset btn
+			this.resetBtn = document.createElement('button');
+			this.resetBtn.innerText = 'RESET';
+			this.resetBtn.addEventListener('click', this.resetWatch.bind(this));
+
+			// put elements inn result container
+			this.resultElement.appendChild(this.clockElement);
+			this.resultElement.appendChild(this.timeRow);
+			this.row.appendChild(this.startBtn);
+			this.row.appendChild(this.reverseBtn);
+			this.row.appendChild(this.resetBtn);
+			this.resultElement.appendChild(this.row);
+		}
+
+		startWatch() {
+			if (!this.runningStatus) {
+				this.watchId = setInterval(this.renderWatch.bind(this), 1000);
+				this.runningStatus = true;
+				this.startBtn.innerText = 'STOP';
+			} else {
+				this.stopWatch();
+			}
+		}
+
+		resetWatch() {
+      this.stopWatch();
+      this.currentTime = this.reverse ? this.end : this.start;
+			this.timeElement.innerText = this.currentTime;
+			this.currentRadius = this.startRadius;
+			this.renderNeedle(this.startRadius);
+		}
+
+		reverseWatch() {
+			this.reverse = !this.reverse;
+			this.reverseBtn.innerText = this.reverse ? 'REVERSE OFF' : 'REVERSE ON';
+			this.resetWatch();
+		}
+
+		renderWatch() {
+			this.currentRadius += this.radiusStep;
+			this.reverse ? this.currentTime-- : this.currentTime++;
+			if (this.currentTime > this.end || this.currentTime < this.start) return this.stopWatch();
+			this.timeElement.innerText = this.currentTime;
+			this.renderNeedle(this.currentRadius);
+			this.initRandColor();
+		}
+
+		renderNeedle(radius) {
+			this.needle.style.transform = `rotate(${radius}deg)`;
+    }
+
+		stopWatch() {
+			this.runningStatus = false;
+			this.startBtn.innerText = 'START';
+			clearInterval(this.watchId);
+		}
+
+		initRandColor() {
+			document.body.style.background = '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
+		};
+	}
+
+	const resultElement = document.getElementById('result');
+
+	new Watch(resultElement, 0, 30, false);
+	new Watch(resultElement);
+	new Watch(resultElement);
+	new Watch(resultElement);
+	new Watch(resultElement);
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Classwork</title>
+
+  <script>
+		/*
+      Задание:
+        1. Используя интерфейс который есть на страничке, написать визуальный
+        конструктор обектов используя значение key-value, которые вводятся в
+        соответствующие поля в форме.
+
+        2. Каждый созданый обьект выводить в тег code после добавления каждого
+        нового поля. Т.е мы должны визуально видить в каком состоянии наши обьекты
+        сейчас
+
+        3. По нажатию кнопки Combine Objects! два обьекта должны обьедениться
+        используя метод Object.assing или spread operator и вывестись на стринчку.
+
+        * Изменять HTML можно.
+
+    */
+  </script>
+</head>
+<body>
+<div class="wrap">
+  <div class="assigned">
+    <form class="ObjForm">
+      <input name="key" placeholder="Enter your key"/>
+      <input name="value" placeholder="Enter your value"/>
+      <button type="submit">Send</button>
+    </form>
+    <div class="createResult">
+      <header>
+        Created Object
+      </header>
+      <div class="createdObj">
+        <pre><code></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="assigned">
+    <form class="ObjForm">
+      <input name="key" placeholder="Enter your key"/>
+      <input name="value" placeholder="Enter your value"/>
+      <button type="submit">Send</button>
+    </form>
+    <div class="createResult">
+      <header>
+        Created Object
+      </header>
+      <div class="createdObj">
+        <pre><code></code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="resultBlock">
+  <button id="resultAssign">Combine Objects!</button>
+  <h3> Result: </h3>
+  <div>
+    <pre><code id="result"></code></pre>
+  </div>
+</div>
+
+<script>
+	const allObjects = [];
+	const objForms = document.getElementsByClassName('ObjForm');
+	const assignBtn = document.getElementById('resultAssign');
+	const result = document.getElementById('result');
+
+	assignBtn.addEventListener('click', generateMegaObject);
+	for (let i = 0; i < objForms.length; i++) {
+		objForms[i].addEventListener('submit', function (e) {
+			updateObj(e, i);
+		});
+	}
+
+	function updateObj(e, i) {
+		e.preventDefault();
+		if (!allObjects[i]) allObjects[i] = {}; // create new object if doesnt exist
+		allObjects[i][objForms[i].key.value] = objForms[i].value.value;
+		const resultElement = objForms[i].closest('.assigned').querySelector('.createdObj code');
+		resultElement.innerHTML = objectToString(allObjects[i]);
+	}
+
+	function objectToString(obj) {
+		let result = '{\n';
+		for (const key in obj) result += `  ${key} : "${obj[key]}",\n`;
+		return result + '}';
+	}
+
+	// assign all objects from array to html
+	function generateMegaObject() {
+		result.innerHTML = objectToString(Object.assign({}, ...allObjects));
+	}
+
+</script>
+
+<style>
+  .wrap {
+    width: 800px;
+    display: flex;
+  }
+
+  .ObjForm,
+  .resultBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 10px 20px;
+  }
+
+  .assigned {
+    width: 300px;
+    display: flex;
+  }
+
+  .createResult header {
+    font-weight: 700;
+  }
+</style>
+</body>
+</html>

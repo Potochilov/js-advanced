@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Classwork</title>
+
+  <script>
+		window.onload = () => {
+			/*
+        Задание:
+        1. При помощи методов изложеных ниже, переформатировать ITEA_COURSES в массив который содержит длину строк каждого из элементов.
+        2. Отфильтровать массив ITEA_COURSES по алфавиту.
+            + Бонусный бал. Вывести на страничку списком
+        3. Реализация функции поиска по массиву ITEA_COURSES.
+            + Бонусный бал. Вывести на страничку инпут и кнопку по которой будет срабатывать поиск.
+      */
+
+			const ITEA_COURSES = ["Курс HTML & CSS", "JavaScript базовый курс", "JavaScript продвинутый курс", "JavaScript Professional", "Angular 2.4 (базовый)", "Angular 2.4 (продвинутый)", "React.js", "React Native", "Node.js", "Vue.js"];
+
+			// filter courses
+			const findCoursesByQuery = (array, query) => array.filter(item => item.toLowerCase().includes(query.toLowerCase()));
+			const renderCourses = (array, element) => array.forEach(item => element.appendChild(document.createElement('div')).innerText = item);
+
+			// get array length
+			const ITEA_COURSES_LENGTH = ITEA_COURSES.map((course) => course.length);
+			console.log(ITEA_COURSES_LENGTH);
+
+			// sort by alphabet
+			ITEA_COURSES.sort();
+
+			// show like markup
+			const result = document.getElementById('courses');
+			const query = document.getElementById('findCourses');
+			const findBtn = document.getElementById('findBtn');
+
+			findBtn.addEventListener('click', () => {
+				result.innerHTML = '';
+				renderCourses(findCoursesByQuery(ITEA_COURSES, query.value), result)
+			});
+
+			renderCourses(findCoursesByQuery(ITEA_COURSES, ''), result);
+
+
+			/*
+        Задание 2:
+        Написать фильтр массива по:
+        Актеру, продолжительности
+
+        Бонус:
+          Сделать графическую оболочку для программы:
+          - Селект со списком актеров
+          - Селект или инпут с продолжительностью
+          - Результат в виде списка фильмов
+      */
+
+			const movies = [
+				{
+					name: "Lord of the Rigs",
+					duration: 240,
+					starring: ['Elijah Wood', 'Ian McKellen', 'Orlando Bloom']
+				},
+				{
+					name: "Star Wars: Episode I - The Phantom Menace",
+					duration: 136,
+					starring: ['Ewan McGregor', 'Liam Neeson', 'Natalie Portman']
+				},
+				{
+					name: "Fargo",
+					duration: 100,
+					starring: ['Ewan McGregor', 'Billy Bob Thornton', 'Martin Freeman']
+				},
+				{
+					name: "V for Vendetta",
+					duration: 150,
+					starring: ['Hugo Weaving', 'Natalie Portman', 'Rupert Graves']
+				}
+			];
+
+			const cinemaFilter = document.getElementById('cinemaFilter');
+			const cinemaList = document.getElementById('cinemaList');
+			const selectActor = document.createElement('select');
+			const selectDuration = document.createElement('select');
+			let actors = [];
+
+      // generate filter
+			movies.forEach(film => {
+				film.starring.forEach(actor => {
+					if (!actors.includes(actor)) actors.push(actor);
+				});
+
+        selectDuration.appendChild(new Option(film.duration));
+			});
+
+			// create unique actors to select
+			[...new Set(actors)].forEach(actor => selectActor.appendChild(new Option(actor)));
+
+			cinemaFilter.appendChild(selectActor);
+			cinemaFilter.appendChild(selectDuration);
+			selectActor.addEventListener('change', renderFilms);
+			selectDuration.addEventListener('change', renderFilms);
+
+			function renderFilms() {
+				const filteredList = movies.filter(movie => {
+          return movie.starring.includes(selectActor.value) && movie.duration === +selectDuration.value;
+				});
+
+				cinemaList.innerHTML = '';
+        console.log(filteredList);
+				filteredList.forEach(film => {
+					cinemaList.insertAdjacentHTML('afterbegin', `<div>${film.name} — ${film.duration}</div>`)
+        })
+			}
+		}
+  </script>
+</head>
+<body>
+<div id="taskOne">
+  <input type="text" id="findCourses">
+  <button id="findBtn">FIND</button>
+  <div id="courses"></div>
+  <br><br><br><br><br>
+  <div id="cinemaFilter"></div>
+  <div id="cinemaList"></div>
+</div>
+</body>
+</html>
