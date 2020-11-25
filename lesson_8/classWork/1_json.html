@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+<div>
+  <p><input class="json-data" type="text" placeholder="name" name="name" /></p>
+  <p><input class="json-data" type="text" placeholder="age" name="age"/></p>
+  <p><input class="json-data" type="text" placeholder="password" name="password"/></p>
+  <button id="toJsonBtn" type="button">to json</button>
+</div>
+
+<div>
+  <p><input id="json" name="json" type="text" /></p>
+  <button id="parsJson">pars json</button>
+</div>
+<script>
+
+	/*
+    Задание:
+    Написать скрипт который:
+      1. Собирает данные с формы (3 разных полей), конвертирует их в json и выводит в консоль.
+    ->  2. Сделать отдельный инпут который выполняет JSON.parse(); на ту строку что вы туда ввели и выводит результат в консоль.
+
+    Array.from(HTMLNodeColection); -> Arary
+
+    -> '{"name" : "23123", "age": 15, "password": "*****" }'
+  */
+
+	// form to json
+	const toJsonBtn = document.getElementById('toJsonBtn');
+	const jsonDataInputs = document.getElementsByClassName('json-data');
+	toJsonBtn.addEventListener('click', formToJson);
+
+	function formToJson() {
+		const obj = {};
+		[...jsonDataInputs].map(input => obj[input.name] = input.value);
+		console.log(JSON.stringify(obj));
+	}
+
+	// json to obj
+	const jsonField = document.getElementById('json');
+	const getJson = document.getElementById('parsJson');
+	getJson.addEventListener('click', () => console.log(JSON.parse(jsonField.value)));
+</script>
+</body>
+</html>

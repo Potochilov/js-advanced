@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 10px 20px;
+      text-align: center;
+    }
+
+    .toggle {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+	/*
+
+  Задание:
+
+    Написать при помощи async-await скрипт, который:
+
+    Получает список компаний:  http://www.json-generator.com/api/json/get/ceRHciXcVu?indent=2
+    Перебирает, выводит табличку:
+
+    # | Company  | Balance | Показать дату регистрации | Показать адресс |
+    1.| CompName | 2000$   | button                    | button
+    2.| CompName | 2000$   | 20/10/2019                | button
+    3.| CompName | 2000$   | button                    | button
+    4.| CompName | 2000$   | button                    | button
+
+    Данные о дате регистрации и адресс скрывать при выводе и показывать при клике.
+
+*/
+
+	async function companiesList() {
+		const companiesListResponse = await fetch('http://www.json-generator.com/api/json/get/ceRHciXcVu?indent=2');
+		const companiesList = await companiesListResponse.json();
+		const table = document.createElement('table');
+		const row = document.createElement('tr');
+		row.appendChild(createTh('#'));
+		row.appendChild(createTh('Company'));
+		row.appendChild(createTh('Balance'));
+		row.appendChild(createTh('Показать дату регистрации'));
+		row.appendChild(createTh('Показать адресс'));
+		table.appendChild(row);
+		companiesList.map((company, index) => {
+			const row = document.createElement('tr');
+			row.appendChild(createTd(index));
+			row.appendChild(createTd(company.company));
+			row.appendChild(createTd(company.balance));
+			row.appendChild(createToggleTd(company.registered));
+			row.appendChild(createToggleTd(`${company.address.country} ${company.address.city}`));
+			table.appendChild(row);
+			console.log(company.address);
+		});
+
+		document.body.appendChild(table);
+	}
+
+	function createTd(data) {
+		const element = document.createElement('td');
+		element.innerText = data;
+		return element;
+	}
+
+	function createTh(data) {
+		const element = document.createElement('th');
+		element.innerText = data;
+		return element;
+	}
+
+	function createToggleTd(data) {
+		const td = document.createElement('td');
+		const div = document.createElement('div');
+		const button = document.createElement('button');
+		button.innerText = 'show';
+		button.addEventListener('click', showData);
+		div.innerText = data;
+		div.classList.add('toggle');
+		td.appendChild(div);
+		td.appendChild(button);
+		return td;
+	}
+
+	function showData() {
+		this.parentElement.querySelector('.toggle').style.display = 'block';
+		this.style.display = 'none';
+	}
+
+	companiesList();
+</script>
+</body>
+</html>
+
