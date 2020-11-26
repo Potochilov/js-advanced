@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Constructors</title>
+  <style>
+    ul {
+      list-style: none;
+    }
+
+    li {
+      background: #ebebeb;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <form id="messageForm">
+      <label for="author">
+        <span>Author</span>
+        <select id="author" name="author">
+          <option value="Taras Shevchenko">Taras Shevchenko</option>
+          <option value="Ivan Franko">Ivan Franko</option>
+          <option value="Vasyl Stys">Vasyl Stys</option>
+          <option value="Oles Gonchar">Oles Gonchar</option>
+        </select>
+      </label>
+      <label for="message">
+        <span>Message</span>
+        <textarea placeholder="Your Message" name="message" id="message"></textarea>
+      </label>
+      <button type="button" id="sendMessage">Send Message</button>
+    </form>
+  </header>
+  <section>
+    <ul id="message_list"></ul>
+  </section>
+</div>
+<script>
+	let messages = [];
+
+	class Message {
+		constructor(author, text) {
+			this.id = uuIdv4();
+			this.author = author;
+			this.text = text;
+			this.date = Date.now();
+			this.answers = [];
+		}
+
+		SkipMessage() {
+			console.log(this);
+			messages = messages.filter(message => message.id !== this.id);
+			this.render(messages);
+		}
+
+		AnswerMessage(container) {
+			console.log(this);
+			const form = document.createElement('div');
+			const input = document.createElement('input');
+			const btn = document.createElement('button');
+			btn.innerText = 'send answer';
+			form.appendChild(input);
+			form.appendChild(btn);
+			container.appendChild(form);
+			btn.addEventListener('click', () => {
+				this.SendAnswer(input.value);
+				form.parentElement.removeChild(form);
+			});
+		}
+
+		SendAnswer(answer) {
+			const answerObj = new Answer(this.author, answer, this.id);
+			this.answers.push(answerObj);
+			this.render(messages);
+		}
+
+		render(messages) {
+			messagesList.innerHTML = '';
+			messages.map(message => {
+				const container = document.createElement('li');
+				const answerBtn = document.createElement('button');
+				const skipBtn = document.createElement('button');
+				answerBtn.innerText = 'answer';
+				skipBtn.innerText = 'skip';
+				skipBtn.addEventListener('click', message.SkipMessage.bind(message));
+				answerBtn.addEventListener('click', message.AnswerMessage.bind(message, container));
+				container.appendChild(document.createElement('div')).innerText = new Date(message.date).toLocaleString("ru");
+				container.appendChild(document.createElement('div')).innerText = message.author;
+				container.appendChild(document.createElement('div')).innerText = message.text;
+				container.appendChild(answerBtn);
+				container.appendChild(skipBtn);
+				if (message.answers) {
+					const answersContainer = document.createElement('div');
+					message.answers.map(answer => {
+						answersContainer.appendChild(document.createElement('div')).innerText = answer.text;
+					});
+					container.appendChild(answersContainer);
+				}
+				messagesList.appendChild(container);
+			});
+		}
+	}
+
+	class Answer extends Message {
+		constructor(author, text, id) {
+			super(author, text);
+			this.parentID = id;
+		}
+	}
+
+	function uuIdv4() {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+
+	const messageForm = document.getElementById('messageForm');
+	const sendMessageBtn = document.getElementById('sendMessage');
+	const messagesList = document.getElementById('message_list');
+
+	sendMessageBtn.addEventListener('click', createMessage);
+
+	function createMessage() {
+		const newMessage = new Message(messageForm.author.value, messageForm.message.value);
+		messages.push(newMessage);
+		newMessage.render(messages);
+		messageForm.message.value = '';
+	}
+
+
+	/*
+    Задание на классы.
+
+    Создать класс Message конструктор котрого состоит из следующих полей:
+    id, author, text, date, answers
+
+    У этого класса будет два метода:
+    SkipMessage() -> которое должно найти сообщение и удалить его из массива.
+    AnswerMessage()-> должно отрыть поле ввода, в который вы сможете ввести ответ
+    SendAnswer() -> метод который «отравляет» ответ, при этом обновляя поле ответа(answers) в вашем объекте с сообщением.
+
+    В метод SendAnswer нужно передать обьект класса Answer который наследуется от класса Message,
+    Но еще дополнительно будет иметь поле parentId.
+
+
+    message = {
+      id: '',
+      author: '',
+      text: '',
+      date: '',
+      answers: [
+        {
+          id: '',
+          author: '',
+          text: '',
+          date: '',
+          parentId: '',
+          answers: ''
+        }
+      ]
+    }
+
+    +Bonus: После создании сообщение добавляется в массив со всеми сообщениями, которые потом будут выводится на экран.
+
+    _ _ _
+
+    Задание можно разбелить на две части:
+      1. Создание самого сообщения:
+      id->выдаётся автоматом
+      Author-> селект с выбором автора
+      Text -> текст сообщения
+      date -> автоматически в момент создания
+
+      Все данные беруться с формы. Массив с сообщениями передается в функцию рендера, которая генерирует сам список.
+
+      2. Ответ на сообщение
+
+  */
+
+</script>
+</body>
+</html>
