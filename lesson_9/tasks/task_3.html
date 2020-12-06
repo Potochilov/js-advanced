@@ -11,6 +11,7 @@
       padding: 20px;
       margin-top: 10px;
     }
+
     .active {
       background: lightgreen;
     }
@@ -57,7 +58,6 @@
 		render() {
 			const post = document.createElement('div');
 			const likeBtn = document.createElement('button');
-			console.log(this.likes);
 			likeBtn.innerText = this.likes + ' ❤';
 			likeBtn.addEventListener('click', this.addLike.bind(this));
 
@@ -111,9 +111,7 @@
 				const post = new Post(new_post.title, new_post.about, new_post.isActive, new_post.created_at, new_post._id, new_post.likes);
 				saveToLocalStorage();
 				result.appendChild(post.render(new_posts, result));
-			} else {
-				console.log('repeated');
-      }
+			}
 		});
 	}
 
