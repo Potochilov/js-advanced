@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #result > div {
+      padding: 20px;
+      margin-top: 10px;
+    }
+    .active {
+      background: lightgreen;
+    }
+
+    .not-active {
+      opacity: .6;
+    }
+  </style>
+</head>
+<body>
+<form id="post_form">
+  <h1>Create new post</h1>
+  <p><input type="text" name="title" required placeholder="title"></p>
+  <p><textarea name="about" required placeholder="about" cols="30" rows="10"></textarea></p>
+  <p><label><input type="checkbox" name="isActive" placeholder="isActive"> активен</label></p>
+  <button>ADD POST</button>
+</form>
+<button onclick="loadPosts()">LOAD POSTS</button>
+<div id="result"></div>
+<script>
+	const form = document.getElementById('post_form');
+	const result = document.getElementById('result');
+	form.addEventListener('submit', addPost);
+
+	const posts = [];
+
+	class Post {
+		constructor(title, about, isActive = false, created_at = '', _id = '', likes = 0) {
+			this.title = title;
+			this.likes = likes;
+			this.about = about;
+			this.isActive = isActive;
+			this.created_at = created_at || new Date().toLocaleString("ru");
+			this._id = _id || Date.now();
+			posts.push(this);
+		}
+
+		addLike() {
+			this.likes += 1;
+			document.querySelector(`[data-id="${this._id}"] button`).innerText = this.likes + ' ❤';
+			saveToLocalStorage();
+		}
+
+		render() {
+			const post = document.createElement('div');
+			const likeBtn = document.createElement('button');
+			console.log(this.likes);
+			likeBtn.innerText = this.likes + ' ❤';
+			likeBtn.addEventListener('click', this.addLike.bind(this));
+
+			post.dataset.id = this._id;
+			post.classList.add(this.isActive ? 'active' : 'not-active');
+			post.innerHTML = `
+          <h2>${this.title}</h2>
+          <p>${this.about}</p>
+          <p>создан ${this.created_at}</p>
+        `;
+			post.appendChild(likeBtn);
+			return post;
+		}
+	}
+
+	const storagePosts = localStorage.getItem('posts');
+	if (storagePosts) {
+		const posts = JSON.parse(storagePosts);
+		renderPosts(posts);
+	}
+
+	function addPost(e) {
+		e.preventDefault();
+		const post = new Post(form.title.value, form.about.value, form.isActive.checked);
+		form.title.value = '';
+		form.about.value = '';
+		form.isActive.value = '';
+		form.isActive.checked = false;
+		saveToLocalStorage();
+		result.appendChild(post.render());
+	}
+
+	function renderPosts(posts) {
+		posts.forEach(post => {
+			const newPost = new Post(post.title, post.about, post.isActive, post.created_at, post._id, post.likes);
+			result.appendChild(newPost.render());
+		});
+		saveToLocalStorage();
+	}
+
+	function saveToLocalStorage() {
+		localStorage.setItem('posts', JSON.stringify(posts));
+	}
+
+	async function loadPosts() {
+		const response = await fetch('http://www.json-generator.com/api/json/get/cgCRXqNTtu?indent=2');
+		const new_posts = await response.json();
+		new_posts.map(new_post => {
+			const has_post = posts.some(post => post._id === new_post._id);
+			if (!has_post) {
+				const post = new Post(new_post.title, new_post.about, new_post.isActive, new_post.created_at, new_post._id, new_post.likes);
+				saveToLocalStorage();
+				result.appendChild(post.render(new_posts, result));
+			} else {
+				console.log('repeated');
+      }
+		});
+	}
+
+	/*
+
+  Задание 3:
+
+
+  Написать класс Posts в котором есть данные:
+
+  _id
+  isActive,
+  title,
+  about,
+  likes,
+  created_at
+
+  У класса должен быть метод addLike и render.
+
+  Нужно сделать так чтобы:
+  - После добавления поста, данные о нем записываются в localStorage.
+  - После перезагрузки страницы, данные должны сохраниться.
+  - Можно было предзагрузить данные в данный модуль: http://www.json-generator.com/api/json/get/cgCRXqNTtu?indent=2
+*/
+</script>
+</body>
+</html>
